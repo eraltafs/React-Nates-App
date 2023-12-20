@@ -68,7 +68,6 @@ function Notes() {
         }
     }
     handlePageChange(page)
-
     return (
         <>
             <h2 className='text-center text-white my-2 mx-auto p-2' style={{ width: "max-content", borderRadius: "10px", backgroundColor: "rgb(33,37,41)", boxShadow: "rgb(255 255 255 / 35%) 0px 5px 6px" }}>Add Note</h2>
