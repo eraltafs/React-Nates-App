@@ -10,6 +10,7 @@ function Notes() {
     const [note, setNote] = useState({ title: "", Description: "" })
     const [show, setShow] = useState(false);
     const [page, setPage] = useState(1)
+    const currentNotes = []
     const navigate = useNavigate()
     const maxPage = Math.ceil(notes.length / 6)
     const appendButton = () => {
@@ -19,7 +20,10 @@ function Notes() {
                 <Button
                     disabled={i === page} key={i}
                     className={`mx-2 ${page === i ? 'text-danger' : ""}`}
-                    onClick={() => setPage(i)}>
+                    onClick={() => {
+                        setPage(i)
+                        handlePageChange(i)
+                    }}>
                     {i}
                 </Button>)
         }
@@ -35,7 +39,7 @@ function Notes() {
         }
     }, [])
     const updateNote = (note) => {
-        console.log(note)
+
         setNote(note)
         handleShow()
     }
@@ -45,13 +49,26 @@ function Notes() {
     }
     const onSubmit = (e) => {
         e.preventDefault()
-        console.log(note)
+
         editNote(note)
         handleClose()
     }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const handlePageChange = (page) => {
+        const ILN = page * 6
+        const IFN = ILN - 6
+        for (let i = IFN; i < ILN; i++) {
+            if (notes[i] == undefined) {
+                break;
+            }
+            currentNotes.push(notes[i])
+        }
+    }
+    handlePageChange(page)
+
     return (
         <>
             <h2 className='text-center text-white my-2 mx-auto p-2' style={{ width: "max-content", borderRadius: "10px", backgroundColor: "rgb(33,37,41)", boxShadow: "rgb(255 255 255 / 35%) 0px 5px 6px" }}>Add Note</h2>
@@ -83,11 +100,11 @@ function Notes() {
                 </Modal.Footer>
             </Modal>
             <h2 className='text-center text-white my-4 mx-auto p-2' style={{ width: "max-content", borderRadius: "10px", backgroundColor: "rgb(33,37,41)", boxShadow: "rgb(255 255 255 / 35%) 0px 5px 6px" }}>Your Notes</h2>
-            {notes && notes.length > 0 ?
+            {currentNotes && currentNotes.length > 0 ?
                 <div className="container">
                     <div className="row my-4 container mx-auto row-gap-4">
 
-                        {notes.map((note, i) => {
+                        {currentNotes.map((note, i) => {
                             return (
                                 <div key={i} className="col-md-4">
                                     <NoteItem note={note} updateNote={updateNote} />
@@ -98,14 +115,20 @@ function Notes() {
                     <div className="pagination mx-auto my-2" style={{ width: "max-content" }}>
                         <Button
                             disabled={page === 1}
-                            onClick={() => setPage(page - 1)}>
-                            prev
+                            onClick={() => {
+                                setPage(page - 1)
+                                handlePageChange(page - 1)
+                            }}>
+                            <i class="fa-solid fa-arrow-left"></i>
                         </Button>
                         {appendButton()}
                         <Button
                             disabled={page === maxPage}
-                            onClick={() => setPage(page + 1)}>
-                            next
+                            onClick={() => {
+                                setPage(page + 1)
+                                handlePageChange(page + 1)
+                            }}>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </Button>
                     </div>
                 </div> : <h3 className='text-center text-white my-2 mx-auto p-2'>Currently you Don't have notes. You can add.</h3>}
